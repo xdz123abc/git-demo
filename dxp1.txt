@@ -1,1 +1,36 @@
-hello dxp1
+curl -L https://github.com/docker/compose/releases/download/1.26.0/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
+sudo yum install python3-pip
+pip3 install bottle
+mkdir cho13 && cd cho13
+vi Dockerfile
+使用文本编辑器（如vi）创建一个名为Dockerfile的文件，内容如下：
+# 使用官方Python运行时作为基础镜像
+FROM python:3.9-slim
+
+# 设置工作目录
+WORKDIR /app
+
+# 复制当前目录的所有内容到工作目录
+COPY . /app
+
+# 安装应用程序所需的依赖
+RUN pip install --no-cache-dir bottle
+
+# 暴露应用程序运行的端口
+EXPOSE 8080
+# 定义容器启动时运行的命令
+CMD ["python","app.py"]
+vi app.py
+from bottle import Bottle, run
+
+app = Bottle()
+
+@app.route('/')
+def index():
+    return "<html><body><h1>Hello from Python Bottle App in Container!</h1></body></html>"
+
+if __name__ == '__main__':
+run(app, host='0.0.0.0', port=8080)
+docker build -t python-bottle-app .
+docker run -p 8080:8080 python - bottle - app
+
